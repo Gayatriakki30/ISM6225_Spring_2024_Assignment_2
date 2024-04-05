@@ -100,8 +100,38 @@ namespace ISM6225_Spring_2024_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return 0;
-            }
+                if (nums.Length == 0)
+                    return 0;
+
+                int i = 0; 
+                for (int j = 1; j < nums.Length; j++)
+                {
+                    if (nums[j] != nums[i])
+                    {
+                        i++;
+                        nums[i] = nums[j];
+                    }
+                }
+                Console.Write(i + 1 + ", nums = [");
+                for (int k = 0; k < nums.Length; k++)
+                {
+                    if (k <= i)
+                    {
+                        Console.Write(nums[k]);
+                    }
+                    else
+                    {
+                        Console.Write('_');
+                    }
+                    if (k < nums.Length - 1)
+                    {
+                        Console.Write(',');
+                    }
+                }
+                Console.Write("] \n");
+                return i+1;
+                
+            } 
             catch (Exception)
             {
                 throw;
@@ -134,14 +164,28 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return new List<int>();
+                int insertPos = 0; // Initialize the position for inserting non-zero elements
+                for (int i = 0; i < nums.Length; i++)
+                {
+                    if (nums[i] != 0)
+                    {
+                        // Swap the non-zero element with the element at insertPos
+                        int temp = nums[i];
+                        nums[i] = nums[insertPos];
+                        nums[insertPos] = temp;
+
+                        // Move the insert position forward
+                        insertPos++;
+                    }
+                }
+                return nums;
             }
             catch (Exception)
             {
                 throw;
             }
         }
+        
 
         /*
 
@@ -186,7 +230,30 @@ namespace ISM6225_Spring_2024_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                return new List<IList<int>>();
+                IList<IList<int>> result = new List<IList<int>>();
+                Array.Sort(nums);
+
+                for (int i = 0; i < nums.Length - 2; i++)
+                {
+                    if (i == 0 || (i > 0 && nums[i] != nums[i - 1]))
+                    {
+                        int left = i + 1, right = nums.Length - 1, target = -nums[i];
+                        while (left < right)
+                        {
+                            if (nums[left] + nums[right] == target)
+                            {
+                                result.Add(new List<int> { nums[i], nums[left], nums[right] });
+                                while (left < right && nums[left] == nums[left + 1]) left++;
+                                while (left < right && nums[right] == nums[right - 1]) right--;
+                                left++;
+                                right--;
+                            }
+                            else if (nums[left] + nums[right] < target) left++;
+                            else right--;
+                        }
+                    }
+                }
+                return result;
             }
             catch (Exception)
             {
@@ -220,8 +287,23 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                int maxConsecutive = 0;
+                int currentConsecutive = 0;
+
+                foreach (int num in nums)
+                {
+                    if (num == 1)
+                    {
+                        currentConsecutive++;
+                        maxConsecutive = Math.Max(maxConsecutive, currentConsecutive);
+                    }
+                    else
+                    {
+                        currentConsecutive = 0;
+                    }
+                }
+
+                return maxConsecutive;
             }
             catch (Exception)
             {
@@ -232,7 +314,9 @@ namespace ISM6225_Spring_2024_Assignment_2
         /*
 
         Question 5:
-        You are tasked with writing a program that converts a binary number to its equivalent decimal representation without using bitwise operators or the `Math.Pow` function. You will implement a function called `BinaryToDecimal` which takes an integer representing a binary number as input and returns its decimal equivalent. 
+        You are tasked with writing a program that converts a binary number to its equivalent decimal representation without using bitwise
+        operators or the `Math.Pow` function. You will implement a function called `BinaryToDecimal` which takes an integer representing a
+        binary number as input and returns its decimal equivalent. 
 
         Requirements:
         1. Your program should prompt the user to input a binary number as an integer. 
@@ -256,8 +340,17 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                int decimalValue = 0;
+                int baseValue = 1; 
+
+                while (binary > 0)
+                {
+                    int lastDigit = binary % 10;
+                    binary = binary / 10;
+                    decimalValue += lastDigit * baseValue;
+                    baseValue = baseValue * 2;
+                }
+                return decimalValue;
             }
             catch (Exception)
             {
@@ -294,8 +387,46 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                if (nums.Length < 2)
+                {
+                    return 0;
+                }
+
+                int min = int.MaxValue, max = int.MinValue;
+                foreach (int num in nums)
+                {
+                    min = Math.Min(min, num);
+                    max = Math.Max(max, num);
+                }
+
+                int bucketSize = Math.Max(1, (max - min) / (nums.Length - 1));
+                int bucketCount = (max - min) / bucketSize + 1;
+                int[] bucketMin = new int[bucketCount];
+                int[] bucketMax = new int[bucketCount];
+                Array.Fill(bucketMin, int.MaxValue);
+                Array.Fill(bucketMax, int.MinValue);
+
+                foreach (int num in nums)
+                {
+                    int idx = (num - min) / bucketSize;
+                    bucketMin[idx] = Math.Min(bucketMin[idx], num);
+                    bucketMax[idx] = Math.Max(bucketMax[idx], num);
+                }
+
+                int maxGap = 0, previousMax = min;
+                for (int i = 0; i < bucketCount; i++)
+                {
+                    if (bucketMin[i] == int.MaxValue && bucketMax[i] == int.MinValue)
+                    {
+                        // Empty bucket
+                        continue;
+                    }
+
+                    maxGap = Math.Max(maxGap, bucketMin[i] - previousMax);
+                    previousMax = bucketMax[i];
+                }
+
+                return maxGap;
             }
             catch (Exception)
             {
@@ -306,7 +437,8 @@ namespace ISM6225_Spring_2024_Assignment_2
         /*
 
         Question:7
-        Given an integer array nums, return the largest perimeter of a triangle with a non-zero area, formed from three of these lengths. If it is impossible to form any triangle of a non-zero area, return 0.
+        Given an integer array nums, return the largest perimeter of a triangle with a non-zero area, formed from three of these lengths.
+        If it is impossible to form any triangle of a non-zero area, return 0.
 
         Example 1:
 
@@ -334,7 +466,15 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
+                Array.Sort(nums);
+                Array.Reverse(nums);
+                for (int i = 0; i < nums.Length - 2; i++)
+                {
+                    if (nums[i] < nums[i + 1] + nums[i + 2])
+                    {
+                        return nums[i] + nums[i + 1] + nums[i + 2];
+                    }
+                }
                 return 0;
             }
             catch (Exception)
@@ -388,8 +528,15 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return "";
+                int partLength = part.Length;
+                int index = s.IndexOf(part);
+                while (index != -1)
+                {
+                    s = s.Remove(index, partLength);
+                    index = s.IndexOf(part);
+                }
+
+                return s;
             }
             catch (Exception)
             {
@@ -421,7 +568,6 @@ namespace ISM6225_Spring_2024_Assignment_2
             return sb.ToString();
         }
 
-
         static string ConvertIListToArray(IList<int> input)
         {
             // Create an array to hold the strings in input
@@ -437,5 +583,6 @@ namespace ISM6225_Spring_2024_Assignment_2
 
             return result;
         }
+      
     }
 }
