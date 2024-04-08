@@ -100,20 +100,20 @@ namespace ISM6225_Spring_2024_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                if (nums.Length == 0)
+                if (nums.Length == 0) //checking whether the array is empty or not.
                     return 0;
 
-                int i = 0; 
+                int i = 0; //initialising i to make sure it has only unique elements and then we are interating through the array strating from second element.
                 for (int j = 1; j < nums.Length; j++)
                 {
-                    if (nums[j] != nums[i])
+                    if (nums[j] != nums[i]) //we are checking whether the current element is different from the previous unique element.
                     {
                         i++;
                         nums[i] = nums[j];
                     }
                 }
                 Console.Write(i + 1 + ", nums = [");
-                for (int k = 0; k < nums.Length; k++)
+                for (int k = 0; k < nums.Length; k++) //iterating through the array to print the elements upto the last unique element in further.
                 {
                     if (k <= i)
                     {
@@ -162,19 +162,19 @@ namespace ISM6225_Spring_2024_Assignment_2
 
         public static IList<int> MoveZeroes(int[] nums)
         {
-            try
+           try
             {
-                int insertPos = 0; // Initialize the position for inserting non-zero elements
+                int insertPos = 0; //initialising the position for inserting non-zero elements
                 for (int i = 0; i < nums.Length; i++)
                 {
                     if (nums[i] != 0)
                     {
-                        // Swap the non-zero element with the element at insertPos
+                        //if the condition is true it swaps the non-zero element with the element at insertPos
                         int temp = nums[i];
                         nums[i] = nums[insertPos];
                         nums[insertPos] = temp;
 
-                        // Move the insert position forward
+                        //and then moving the insert position forward
                         insertPos++;
                     }
                 }
@@ -230,26 +230,26 @@ namespace ISM6225_Spring_2024_Assignment_2
             try
             {
                 // Write your code here and you can modify the return value according to the requirements
-                IList<IList<int>> result = new List<IList<int>>();
-                Array.Sort(nums);
+                IList<IList<int>> result = new List<IList<int>>();//initialising the result list to store triplets
+                Array.Sort(nums);//sorting the array
 
                 for (int i = 0; i < nums.Length - 2; i++)
                 {
-                    if (i == 0 || (i > 0 && nums[i] != nums[i - 1]))
+                    if (i == 0 || (i > 0 && nums[i] != nums[i - 1]))//skips duplicate elements
                     {
                         int left = i + 1, right = nums.Length - 1, target = -nums[i];
-                        while (left < right)
+                        while (left < right)//using two pointer approach to find pairs that sum up to the target
                         {
                             if (nums[left] + nums[right] == target)
                             {
-                                result.Add(new List<int> { nums[i], nums[left], nums[right] });
-                                while (left < right && nums[left] == nums[left + 1]) left++;
+                                result.Add(new List<int> { nums[i], nums[left], nums[right] });//if it finds, it updates result.
+                                while (left < right && nums[left] == nums[left + 1]) left++;//we are skipping duplicate elements here
                                 while (left < right && nums[right] == nums[right - 1]) right--;
-                                left++;
+                                left++;//moving pointers
                                 right--;
                             }
-                            else if (nums[left] + nums[right] < target) left++;
-                            else right--;
+                            else if (nums[left] + nums[right] < target) left++;//if the sum is less than the target it will increase the sum
+                            else right--;//if the sum is greater than the target it will decrease the sum
                         }
                     }
                 }
@@ -287,19 +287,19 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                int maxConsecutive = 0;
+                int maxConsecutive = 0;//initialising variables to keep track of maximum and current value
                 int currentConsecutive = 0;
 
-                foreach (int num in nums)
+                foreach (int num in nums) //iterating to find maximum consecutive ones
                 {
-                    if (num == 1)
+                    if (num == 1) //if the condition is true it increments current consecutive count and updates max consecutive
                     {
                         currentConsecutive++;
                         maxConsecutive = Math.Max(maxConsecutive, currentConsecutive);
                     }
                     else
                     {
-                        currentConsecutive = 0;
+                        currentConsecutive = 0; //or else it resets the count
                     }
                 }
 
@@ -343,10 +343,10 @@ namespace ISM6225_Spring_2024_Assignment_2
                 int decimalValue = 0;
                 int baseValue = 1; 
 
-                while (binary > 0)
+                while (binary > 0)//converting binary to decimal
                 {
-                    int lastDigit = binary % 10;
-                    binary = binary / 10;
+                    int lastDigit = binary % 10; //extracting the last digit of the binary number
+                    binary = binary / 10; //removing the last digit from the binary number
                     decimalValue += lastDigit * baseValue;
                     baseValue = baseValue * 2;
                 }
@@ -385,27 +385,27 @@ namespace ISM6225_Spring_2024_Assignment_2
 
         public static int MaximumGap(int[] nums)
         {
-            try
+           try
             {
-                if (nums.Length < 2)
+                if (nums.Length < 2) //if the array contains less than 2 elements then there is no gap to find, so we gonna return 0.
                 {
                     return 0;
                 }
 
-                int min = int.MaxValue, max = int.MinValue;
+                int min = int.MaxValue, max = int.MinValue; //initialising variables to keep track of the minimum and maximum values in the array
                 foreach (int num in nums)
                 {
                     min = Math.Min(min, num);
                     max = Math.Max(max, num);
                 }
-
+                //calculating the size of each bucket, followed by number of buckets and finally assigning values to new arrays
                 int bucketSize = Math.Max(1, (max - min) / (nums.Length - 1));
                 int bucketCount = (max - min) / bucketSize + 1;
                 int[] bucketMin = new int[bucketCount];
                 int[] bucketMax = new int[bucketCount];
                 Array.Fill(bucketMin, int.MaxValue);
                 Array.Fill(bucketMax, int.MinValue);
-
+                //updating min and max values for each bucket
                 foreach (int num in nums)
                 {
                     int idx = (num - min) / bucketSize;
@@ -413,15 +413,15 @@ namespace ISM6225_Spring_2024_Assignment_2
                     bucketMax[idx] = Math.Max(bucketMax[idx], num);
                 }
 
-                int maxGap = 0, previousMax = min;
+                int maxGap = 0, previousMax = min;//finding the maximum gap between consecutive buckets
                 for (int i = 0; i < bucketCount; i++)
                 {
                     if (bucketMin[i] == int.MaxValue && bucketMax[i] == int.MinValue)
                     {
-                        // Empty bucket
+                        //it will skip the empty bucket
                         continue;
                     }
-
+                    //updating and iteration is done here.
                     maxGap = Math.Max(maxGap, bucketMin[i] - previousMax);
                     previousMax = bucketMax[i];
                 }
@@ -466,16 +466,16 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                Array.Sort(nums);
-                Array.Reverse(nums);
+                Array.Sort(nums);//sorting the arrays 
+                Array.Reverse(nums);//and then reversing the sorted arrays
                 for (int i = 0; i < nums.Length - 2; i++)
                 {
-                    if (nums[i] < nums[i + 1] + nums[i + 2])
+                    if (nums[i] < nums[i + 1] + nums[i + 2])//checking whether the current three elements form a valid triangle
                     {
-                        return nums[i] + nums[i + 1] + nums[i + 2];
+                        return nums[i] + nums[i + 1] + nums[i + 2];//if the condition works then this will write the value.
                     }
                 }
-                return 0;
+                return 0;//if not it will returns 0.
             }
             catch (Exception)
             {
@@ -528,12 +528,12 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                int partLength = part.Length;
-                int index = s.IndexOf(part);
-                while (index != -1)
+                int partLength = part.Length;  //assigning the length value of the 'part' string.
+                int index = s.IndexOf(part);   //finding the index value of the first occurrence of 'part' in 's'
+                while (index != -1)   //we are repeating this until no more occurrences of 'part' are found
                 {
-                    s = s.Remove(index, partLength);
-                    index = s.IndexOf(part);
+                    s = s.Remove(index, partLength); //if there is any occurrence we gonna remove the occurrence at the found index
+                    index = s.IndexOf(part);  //and then we gonna find the index of the next of 'part' in the modified 's'
                 }
 
                 return s;
